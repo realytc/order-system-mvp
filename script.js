@@ -69,7 +69,7 @@ function submitOrder() {
       timestamp: new Date().toISOString()
     };
   
-    fetch('https://your-cloud-function-url', {
+    fetch('https://order-system-1044726438520.asia-east1.run.app', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
