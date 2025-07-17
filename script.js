@@ -93,8 +93,8 @@ const menuData = {
     };
   
     // ✅ 替換為你的新 Google Apps Script Web App POST URL
-    fetch('https://script.google.com/macros/s/AKfycbw5iN2x_NiLbmPoDDwM33MWR-iuzrJ8pW2GLb8j_emwXDpVHb4fjsueJ5Z4FujhtPWE/exec', {
-      method: 'POST',
+    fetch('https://script.google.com/macros/s/AKfycbxi-jKrXkJznjFwYjN3m2z99Qhe4OSP_HOMC9MntE3gTE5UeozXFcSmFfcEijhnHHoF/exec', {
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     })
