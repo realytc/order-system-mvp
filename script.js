@@ -59,23 +59,70 @@ const menuData = {
   
 
   // script.js 中送出資料
-function submitOrder() {
+  function submitOrder() {
+    const name = document.getElementById("username").value.trim();
+    const category = document.getElementById("category").value;
+    const item = document.getElementById("item").value;
+    const rice = document.getElementById("rice")?.value || "";
+    const note = document.getElementById("note").value;
+  
+    const resultBox = document.getElementById("result");
+    const button = document.getElementById("submitBtn");
+  
+    // 檢查必填欄位
+    if (!name || !category || !item) {
+      alert("請填寫姓名、選擇類別與品項！");
+      return;
+    }
+  
+    // 顯示送出中狀態
+    button.disabled = true;
+    button.textContent = "送出中...";
+  
     const data = {
-      name: document.getElementById("username").value,
-      category: document.getElementById("category").value,
-      item: document.getElementById("item").value,
-      rice: document.getElementById("rice").value,
-      note: document.getElementById("note").value,
+      name,
+      category,
+      item,
+      rice,
+      note,
       timestamp: new Date().toISOString()
     };
   
     fetch('https://order-system-1044726438520.asia-east1.run.app', {
       method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
     })
-    .then(res => res.json())
-    .then(resp => alert('送出成功！'))
-    .catch(err => alert('送出失敗'));
+    .then(res => {
+      if (!res.ok) throw new Error('送出失敗');
+      return res.json();
+    })
+    .then(() => {
+      // 顯示成功回饋訊息
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `
+        <h3>✅ 訂單已送出！</h3>
+        <p><strong>姓名：</strong>${name}</p>
+        <p><strong>類別：</strong>${category === 'bento' ? '便當類' : '單點類'}</p>
+        <p><strong>品項：</strong>${item}</p>
+        ${category === 'bento' ? `<p><strong>飯量：</strong>${rice}</p>` : ""}
+        ${note ? `<p><strong>備註：</strong>${note}</p>` : ""}
+      `;
+  
+      // 清空表單欄位
+      document.getElementById("username").value = "";
+      document.getElementById("category").value = "";
+      document.getElementById("item").innerHTML = "";
+      document.getElementById("note").value = "";
+      document.getElementById("itemSection").style.display = "none";
+      document.getElementById("riceSection").style.display = "none";
+    })
+    .catch(err => {
+      alert("❌ 發送失敗：" + err.message);
+    })
+    .finally(() => {
+      button.disabled = false;
+      button.textContent = "提交訂單";
+    });
   }
   

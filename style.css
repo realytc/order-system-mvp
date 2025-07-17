@@ -101,3 +101,12 @@ canvas {
   margin: 30px auto;
   display: block;
 }
+
+.submit-button {
+  background-color: #4CAF50; /* 綠色提交 */
+  color: white;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
