@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>點餐</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>點餐便當</h1>
+
+  <div class="section">
+    <label>請輸入姓名：</label>
+    <input type="text" id="username" placeholder="請輸入您的英文名" />
+  </div>
+
+  <div class="section">
+    <label>請選擇類別：</label>
+    <select id="category" onchange="handleCategoryChange()">
+      <option value="">-- 請選擇 --</option>
+      <option value="bento">便當類</option>
+      <option value="side">單點類</option>
+    </select>
+  </div>
+
+  <div class="section" id="itemSection" style="display:none;">
+    <label>請選擇品項：</label>
+    <select id="item"></select>
+  </div>
+
+  <div class="section" id="riceSection" style="display:none;">
+    <label>飯量：</label>
+    <select id="rice">
+      <option value="正常">正常</option>
+      <option value="無飯">無飯</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <label>備註：</label>
+    <input type="text" id="note" placeholder="例如：不要辣、去蔥(不一定能滿足)" />
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
