@@ -1,12 +1,12 @@
 const menuData = {
     "便當類": [
-      { "名稱": "炸雞腿便當", "飯量選項": ["正常", "無飯"]},
-      { "名稱": "控肉便當(一塊一塊的，偏瘦)", "飯量選項": ["正常", "無飯"]},
-      { "名稱": "滷雞腿便當", "飯量選項": ["正常", "無飯"]},
-      { "名稱": "雞排便當", "飯量選項": ["正常", "無飯"] },
-      { "名稱": "排骨便當", "飯量選項": ["正常", "無飯"]  },
-      { "名稱": "香腸便當", "飯量選項": ["正常", "無飯"]},
-      { "名稱": "菜飯便當(原4個菜，會多加1份)", "飯量選項": ["正常", "無飯"]}
+      { "名稱": "炸雞腿便當", "飯量選項": ["正常", "減半", "無飯"] },
+      { "名稱": "控肉便當(一塊一塊的，偏瘦)", "飯量選項": ["正常", "減半", "無飯"] },
+      { "名稱": "滷雞腿便當", "飯量選項": ["正常", "減半", "無飯"] },
+      { "名稱": "雞排便當", "飯量選項": ["正常", "減半", "無飯"] },
+      { "名稱": "排骨便當", "飯量選項": ["正常", "減半", "無飯"] },
+      { "名稱": "香腸便當", "飯量選項": ["正常", "減半", "無飯"] },
+      { "名稱": "菜飯便當(原4個菜，會多加1份)", "飯量選項": ["正常", "減半", "無飯"] }
     ],
     "單點類": ["炸雞腿", "炸雞排"]
   };
@@ -15,6 +15,7 @@ const menuData = {
     const categorySelect = document.getElementById("category");
     const category = categorySelect.value;
     const itemSelect = document.getElementById("item");
+    const riceSelect = document.getElementById("rice");
     const riceSection = document.getElementById("riceSection");
     const itemSection = document.getElementById("itemSection");
   
@@ -32,7 +33,8 @@ const menuData = {
   
     handleCategoryChange.lastSelected = category;
     itemSelect.innerHTML = "";
-    // 加入「請選擇品項」的預設選項
+  
+    // 加入「請選擇品項」預設選項
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.textContent = "請選擇品項";
@@ -47,6 +49,23 @@ const menuData = {
         option.textContent = item.名稱;
         itemSelect.appendChild(option);
       });
+  
+      // 飯量選單初始化
+      riceSelect.innerHTML = "";
+      const defaultRiceOption = document.createElement("option");
+      defaultRiceOption.textContent = "請選擇飯量";
+      defaultRiceOption.value = "請選擇飯量";
+      defaultRiceOption.disabled = true;
+      defaultRiceOption.selected = true;
+      riceSelect.appendChild(defaultRiceOption);
+  
+      ["正常", "減半", "無飯"].forEach(riceOption => {
+        const option = document.createElement("option");
+        option.value = riceOption;
+        option.textContent = riceOption;
+        riceSelect.appendChild(option);
+      });
+  
       itemSection.style.display = "block";
       riceSection.style.display = "block";
     } else if (category === "side") {
@@ -64,7 +83,6 @@ const menuData = {
     }
   }
   
-
   function submitOrder() {
     const name = document.getElementById("username").value.trim();
     const category = document.getElementById("category").value;
@@ -80,26 +98,26 @@ const menuData = {
       return;
     }
   
+    // ✅ 若是便當類，飯量必須選擇
+    if (category === "bento" && (!rice || rice === "請選擇飯量")) {
+      alert("請選擇飯量！");
+      return;
+    }
+  
     button.disabled = true;
     button.textContent = "送出中...";
   
-    const data = {
-      name,
-      category,
-      item,
-      rice,
-      note,
-      timestamp: new Date().toISOString()
-    };
-  
-    // ✅ 替換為你的新 Google Apps Script Web App POST URL
-    fetch('https://script.google.com/macros/s/AKfycbxi-jKrXkJznjFwYjN3m2z99Qhe4OSP_HOMC9MntE3gTE5UeozXFcSmFfcEijhnHHoF/exec', {
+    $.ajax({
+      url: 'https://script.google.com/macros/s/AKfycbxi-jKrXkJznjFwYjN3m2z99Qhe4OSP_HOMC9MntE3gTE5UeozXFcSmFfcEijhnHHoF/exec',
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    })
-      .then(res => res.text())
-      .then(responseText => {
+      data: {
+        name,
+        category,
+        item,
+        rice,
+        note
+      },
+      success: function (responseText) {
         console.log("✅ 回應訊息：", responseText);
         resultBox.style.display = "block";
         resultBox.innerHTML = `
@@ -118,14 +136,14 @@ const menuData = {
         document.getElementById("note").value = "";
         document.getElementById("itemSection").style.display = "none";
         document.getElementById("riceSection").style.display = "none";
-      })
-      .catch(err => {
-        alert("❌ 發送失敗：" + err.message);
-      })
-      .finally(() => {
+      },
+      error: function (xhr, status, error) {
+        alert("❌ 發送失敗：" + error);
+      },
+      complete: function () {
         button.disabled = false;
         button.textContent = "提交訂單";
-      });
+      }
+    });
   }
-
   
