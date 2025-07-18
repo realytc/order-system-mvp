@@ -10,6 +10,9 @@
 <body>
   <h1>點餐便當</h1>
 
+  <!-- 倒數計時器區塊 -->
+  <div id="countdown" style="font-weight:bold; margin-bottom: 1em; color: green;"></div>
+
   <div class="section">
     <label>請輸入姓名：</label>
     <input type="text" id="username" placeholder="請輸入您的英文名" />
@@ -26,7 +29,9 @@
 
   <div class="section" id="itemSection" style="display:none;">
     <label>請選擇品項：</label>
-    <select id="item"></select>
+    <select id="item">
+      <option value="">-- 請選擇品項 --</option>
+    </select>
   </div>
 
   <div class="section" id="riceSection" style="display:none;">
@@ -41,10 +46,52 @@
     <label>備註：</label>
     <input type="text" id="note" placeholder="例如：要加辣、去蔥(不一定能滿足)" />
   </div>
+
   <button id="submitBtn" class="submit-button" onclick="submitOrder()">送出</button>
+
   <div class="section" id="result" style="display:none;"></div>
+
   <script src="script.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+  <script>
+    // 訂單截止時間
+    const deadline = new Date("2025-07-25T23:59:59").getTime();
+
+    function startCountdown() {
+      const countdownBox = document.getElementById("countdown");
+
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const remaining = deadline - now;
+
+        if (remaining <= 0) {
+          clearInterval(timer);
+          // 停用點餐功能
+          document.getElementById("submitBtn").disabled = true;
+          document.getElementById("username").disabled = true;
+          document.getElementById("category").disabled = true;
+          document.getElementById("item").disabled = true;
+          document.getElementById("rice").disabled = true;
+          document.getElementById("note").disabled = true;
+
+          // 顯示結束訊息
+          countdownBox.innerHTML = "<strong>⛔ 點餐已結束</strong>";
+          countdownBox.style.color = "red";
+          return;
+        }
+
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+        countdownBox.innerHTML =
+          `⏰ 點餐倒數：${days}天 ${hours}時 ${minutes}分 ${seconds}秒`;
+      }, 1000);
+    }
+
+    startCountdown();
+  </script>
 </body>
 </html>

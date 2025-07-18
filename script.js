@@ -146,4 +146,42 @@ const menuData = {
       }
     });
   }
-  
+
+  // 訂單截止時間：2025/7/25 23:59:59
+const deadline = new Date("2025-07-25T23:59:59").getTime();
+
+function startCountdown() {
+  const countdownBox = document.getElementById("countdown");
+
+  const timer = setInterval(() => {
+    const now = new Date().getTime();
+    const remaining = deadline - now;
+
+    if (remaining <= 0) {
+      clearInterval(timer);
+      // 停用點餐功能
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("username").disabled = true;
+      document.getElementById("category").disabled = true;
+      document.getElementById("item").disabled = true;
+      document.getElementById("rice").disabled = true;
+      document.getElementById("note").disabled = true;
+
+      // 顯示結束訊息
+      countdownBox.innerHTML = "<strong>⛔ 點餐已結束</strong>";
+      countdownBox.style.color = "red";
+      return;
+    }
+
+    // 計算剩餘時間
+    const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+    // 顯示倒數時間
+    countdownBox.innerHTML = `⏰ 點餐倒數：${days}天 ${hours}時 ${minutes}分 ${seconds}秒`;
+  }, 1000);
+}
+
+startCountdown();
